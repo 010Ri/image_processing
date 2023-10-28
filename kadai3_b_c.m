@@ -67,8 +67,8 @@ min_v = min(o_data_v, [], "all");
 max_v = max(o_data_h, [], "all");
 
 % 輝度補正
-A = -609;
-B = 618;
+A = min_h;
+B = max_h;
 C = 0;
 D = 255;
 for x = 1:256
@@ -77,8 +77,8 @@ for x = 1:256
     end
 end
 
-A = -546;
-B = 618;
+A = min_v;
+B = max_v;
 C = 0;
 D = 255;
 for x = 1:256
@@ -138,7 +138,7 @@ disp("o_dataに関する値")
 sum = 0;
 for x = 1:image_h
     for y = 1:image_w
-        sum = sum + o_data(x, y);
+        sum = sum + o_data_h(x, y);
     end
 end
 mean = sum / (image_h * image_w);   
@@ -150,7 +150,7 @@ sum = 0;
 tmp = 0;
 for x = 1:image_h
     for y = 1:image_w
-        tmp = (o_data(x, y) - mean)^2;
+        tmp = (o_data_h(x, y) - mean)^2;
         sum = sum + tmp;
     end
 end
@@ -159,7 +159,7 @@ disp("variance");
 disp(variance);
 
 %フーリエスペクトルを計算
-fs = fft2(o_data);
+fs = fft2(o_data_h);
 %エネルギースペクトルを計算
 ps = fs.*conj(fs);
 % auto-correlation function
@@ -175,7 +175,7 @@ dif = acc_o - acc_i;
 
 %画像データの表示 -- 原画像の表示
 imshow(o_data_h,[gray_level_min gray_level_max]);
-%imshow(o_data_v,[gray_level_min gray_level_max]);
+% imshow(o_data_v,[gray_level_min gray_level_max]);
 % disp(o_data)
 %title('タイトル');
 
