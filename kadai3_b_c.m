@@ -60,33 +60,6 @@ for x = 2:1:image_h+1
     end
 end
 
-% disp(o_data);
-min_h = min(o_data_h, [], "all");
-max_h = max(o_data_h, [], "all");
-min_v = min(o_data_v, [], "all");
-max_v = max(o_data_h, [], "all");
-
-% 輝度補正
-A = min_h;
-B = max_h;
-C = 0;
-D = 255;
-for x = 1:256
-    for y = 1:256
-        o_data_h(x,y) = (D - C) / (B - A) * (o_data_h(x,y) - A) + C;
-    end
-end
-
-A = min_v;
-B = max_v;
-C = 0;
-D = 255;
-for x = 1:256
-    for y = 1:256
-        o_data_v(x,y) = (D - C) / (B - A) * (o_data_v(x,y) - A) + C;
-    end
-end
-
 % 以下はi_dataについての処理
 disp("i_dataに関する値")
 % mean
@@ -113,6 +86,7 @@ variance = sum / (image_h * image_w);
 disp("variance");
 disp(variance);
 
+% シグマの計算
 sigma = sqrt(variance);
 disp("sigma")
 disp(sigma);
@@ -131,6 +105,36 @@ c_f_i = ac_i - (mean^2);
 % auto-correlation coefficient
 acc_i = c_f_i / variance;
 
+% 最大値と最小値
+min_h = min(o_data_h, [], "all");
+max_h = max(o_data_h, [], "all");
+min_v = min(o_data_v, [], "all");
+max_v = max(o_data_h, [], "all");
+
+% 輝度補正
+A = min_h;
+B = max_h;
+% C = 0;
+% D = 255;
+C = mean - t_sigma;
+D = mean + t_sigma;
+for x = 1:256
+    for y = 1:256
+        o_data_h(x,y) = (D - C) / (B - A) * (o_data_h(x,y) - A) + C;
+    end
+end
+
+A = min_v;
+B = max_v;
+% C = 0;
+% D = 255;
+C = mean - t_sigma;
+D = mean + t_sigma;
+for x = 1:256
+    for y = 1:256
+        o_data_v(x,y) = (D - C) / (B - A) * (o_data_v(x,y) - A) + C;
+    end
+end
 
 % 以下はo_dataについての処理
 disp("o_dataに関する値")
